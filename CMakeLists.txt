@@ -84,13 +84,18 @@ add_subdirectory(tap/demos)
 # Copy all files from the source and bin directory to the proper destination
 # Leave out git repo related data
 
+set(CPACK_ARCHIVE_COMPONENT_INSTALL ON)
+set(CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE ON)
+
 install(
     DIRECTORY            
         ${CMAKE_CURRENT_SOURCE_DIR}/tap            
     DESTINATION .
     COMPONENT source
+    EXCLUDE_FROM_ALL   
     REGEX "\.git$" EXCLUDE
-    REGEX "\.github$" EXCLUDE    
+    REGEX "\.github$" EXCLUDE 
+    
 )
 
 install(
@@ -98,8 +103,10 @@ install(
         ${CMAKE_CURRENT_SOURCE_DIR}/third_party
     DESTINATION .
     COMPONENT source
+    EXCLUDE_FROM_ALL   
     REGEX "\.git$" EXCLUDE
     REGEX "\.github$" EXCLUDE
+    
 )
 
 install(
@@ -108,6 +115,7 @@ install(
         CMakePresets.json
     DESTINATION .
     COMPONENT source
+    EXCLUDE_FROM_ALL
 )
 
 install(
@@ -116,14 +124,40 @@ install(
         README.md        
     DESTINATION .
     COMPONENT source
+    EXCLUDE_FROM_ALL
 )
 
+include(GNUInstallDirs)
+
 install(
-    DIRECTORY
-        ${SILKIT_ADAPTERS_TAP_OUTPUT_DIRECTORY}
-    DESTINATION build
-    COMPONENT bin
+    FILES 
+        ${SILKIT_ADAPTERS_TAP_OUTPUT_DIRECTORY}/libSilKit.so                
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
+    PERMISSIONS GROUP_READ GROUP_EXECUTE
+    PERMISSIONS WORLD_READ WORLD_EXECUTE
+    COMPONENT lib
 )
+
+#SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
+#SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
+#SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+#SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_LIBDIR}")
+
+install(
+    TARGETS 
+        SilKitAdapterTap    
+        SilKitDemoEthernetIcmpEchoDevice
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT Runtime
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT Runtime
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/SilKitAdapterTap COMPONENT Development   
+    PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
+    PERMISSIONS GROUP_READ GROUP_EXECUTE
+    PERMISSIONS WORLD_READ WORLD_EXECUTE
+)
+
 
 ###############################################################################
 # Packaging

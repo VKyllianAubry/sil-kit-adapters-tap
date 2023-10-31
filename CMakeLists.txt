@@ -123,7 +123,10 @@ install(
         ${SILKIT_ADAPTERS_TAP_OUTPUT_DIRECTORY}
     DESTINATION build
     COMPONENT bin
-    USE_SOURCE_PERMISSIONS
+    FILE_PERMISSIONS
+        OWNER_READ OWNER_WRITE OWNER_EXECUTE
+        GROUP_READ GROUP_EXECUTE
+        WORLD_READ WORLD_EXECUTE
 )
 
 ###############################################################################

@@ -11,7 +11,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(SILKIT_ADAPTERS_TAP_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 set(SILKIT_ADAPTERS_TAP_LIBRARY_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 
-set(SILKIT_VERSION "4.0.38" CACHE STRING "If no SIL Kit package is specified, this version will be downloaded")
+set(SILKIT_VERSION "4.0.39" CACHE STRING "If no SIL Kit package is specified, this version will be downloaded")
 set(SILKIT_FLAVOR "ubuntu-18.04-x86_64-gcc" CACHE STRING "If no SIL Kit package is specified, this package flavor will be downloaded")
 
 find_package(Threads REQUIRED)
@@ -84,9 +84,6 @@ add_subdirectory(tap/demos)
 # Copy all files from the source and bin directory to the proper destination
 # Leave out git repo related data
 
-set(CPACK_ARCHIVE_COMPONENT_INSTALL ON)
-set(CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE ON)
-
 install(
     DIRECTORY            
         ${CMAKE_CURRENT_SOURCE_DIR}/tap
@@ -135,7 +132,16 @@ install(
         GROUP_READ GROUP_EXECUTE
         WORLD_READ WORLD_EXECUTE
     COMPONENT bin
+    EXCLUDE_FROM_ALL
+)
 
+# only SilKitAdapterTap should be installed to /usr/local/bin by calling --target install (therefore it is not excluded)
+install(
+    TARGETS 
+        SilKitAdapterTap        
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT Runtime
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT Runtime
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/SilKitAdapterTap COMPONENT Development   
     PERMISSIONS
         OWNER_READ OWNER_WRITE OWNER_EXECUTE
         GROUP_READ GROUP_EXECUTE
@@ -154,5 +160,9 @@ set(CPACK_PACKAGE_NAME "SilKit-Adapters-TAP")
 set(CPACK_PACKAGE_VENDOR "Vector Informatik")
 set(CPACK_PACKAGE_CONTACT "support@vector.com")
 set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}${PACKAGE_FILENAME_SUFFIX}")
+
+set(CPACK_ARCHIVE_COMPONENT_INSTALL ON)
+set(CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE ON)
+set(CPACK_COMPONENT_INCLUDE_TOPLEVEL_DIRECTORY ON)
 
 include(CPack)

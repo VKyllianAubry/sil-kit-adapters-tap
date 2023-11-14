@@ -135,16 +135,7 @@ install(
         GROUP_READ GROUP_EXECUTE
         WORLD_READ WORLD_EXECUTE
     COMPONENT bin
-    EXCLUDE_FROM_ALL
-)
 
-# only SilKitAdapterTap should be installed to /usr/local/bin by calling --target install (therefore it is not excluded)
-install(
-    TARGETS 
-        SilKitAdapterTap        
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT Runtime
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT Runtime
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/SilKitAdapterTap COMPONENT Development   
     PERMISSIONS
         OWNER_READ OWNER_WRITE OWNER_EXECUTE
         GROUP_READ GROUP_EXECUTE
